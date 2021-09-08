@@ -4,12 +4,17 @@
       <div class="iconTag" style="float: left;">
         <h2 class="platform">依医系统</h2>
       </div>
-      <div class="userTag">
+      <div class="userTag" v-if="isLogin">
         <span>用户ID：{{userID}}</span>
         <el-divider direction="vertical" class="spanview"></el-divider>
         <span>{{userName}}</span>
         <el-divider direction="vertical" class="spanview"></el-divider>
         <el-button type="text" size="small" class="el-icon-switch-button" style="color: #556B2F;" @click="unLogin()">退出</el-button>
+      </div>
+      <div class="userTag" v-else>
+        <el-button type="text" size="small" style="color: #556B2F;" @click="loginin()">用户未登录</el-button>
+        <el-divider direction="vertical" class="spanview"></el-divider>
+        <el-button type="text" size="small" style="color: #556B2F;" @click="register()">注册</el-button>
       </div>
     </el-header>
     <el-container>
@@ -38,8 +43,9 @@
 export default {
   data(){
     return{
-      userID: localStorage._id.toString().substring(14),
-      userName: localStorage.u_name
+      userID: '',
+      userName: '',
+      isLogin: true
     }
   },
   beforeCreate: function () {
@@ -48,10 +54,25 @@ export default {
   beforeDestroy: function (){
     document.querySelector("body").removeAttribute('style')
   },
+  mounted() {
+    if(localStorage._id == null){
+      this.isLogin = false
+    }else{
+      this.userID = localStorage._id.toString().substring(14),
+      this.userName = localStorage.u_name
+    }
+  },
   methods: {
+    loginin(){
+      this.$router.push({ path: '/login' })
+    },
     unLogin(){
       localStorage.clear()
-      this.$router.push({ path: '/login'})
+      this.$router.push({ path: '/home' })
+      this.$router.go()
+    },
+    register(){
+      this.$router.push({ path: '/register' })
     }
   }
 };
